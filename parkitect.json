@@ -1,6 +1,6 @@
 {
-  "name": "Template",
-  "folder": "Template",
+  "name": "PMC.ModPatcher",
+  "folder": "PMC@ModPatcher",
   "version": "v0.0.0",
   "workshop": "",
   "author": "Michael Pollind",
@@ -14,8 +14,14 @@
     "UnityEngine.AssetBundleModule",
     "UnityEngine.CoreModule",
     "Parkitect",
-    "UnityEngine.PhysicsModule"
+    "UnityEngine.PhysicsModule",
+    "0Harmony",
+    "PMC.Mod"
   ],
   "assets": [
-  ]
+  ],
+    "Include": [
+        "./packages/Lib.Harmony.*/lib/net35/*.dll",
+        "./packages/PMC.Mod.*/lib/net35/*.dll"
+    ]
 }

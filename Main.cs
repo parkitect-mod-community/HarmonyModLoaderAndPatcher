@@ -13,30 +13,64 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-using System.Linq;
 
-namespace Template
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using HarmonyLib;
+
+
+namespace PMC.ModPatcher
 {
-    public class Main : IMod
+    public class ModPatcherMain : IMod
     {
-        public string Path
-        {
-            get { return ModManager.Instance.getModEntries().First(x => x.mod == this).path; }
-        }
+        private static List<ModManager.ModEntry> ModEntries = new List<ModManager.ModEntry>();
 
         public void onEnabled()
         {
+            var harmony = new Harmony("PMC.ModPatcher");
+            harmony.PatchAll();
 
         }
+
 
         public void onDisabled()
         {
         }
 
-        public string Name => "Template Mod";
+        public string Name => "PMC.ModPatcher";
 
-        public string Description => "";
+        public string Description => "PMC.ModPatcher";
 
-        string IMod.Identifier => "Template";
+        string IMod.Identifier => "PMC.ModPatcher";
+
+        [HarmonyPatch(typeof(ModManager))]
+        class ModManagerPatch01
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(nameof(ModManager.getModEntries))]
+            public static void getModEntriesPatch(ref  ReadOnlyCollection<ModManager.ModEntry> __result)
+            {
+                __result = ModEntries.AsReadOnly();
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(ModManager.triggerEnable))]
+            public static bool TriggerEnableMods()
+            {
+                return true;
+            }
+
+            [HarmonyPrefix]
+            [HarmonyPatch(nameof(ModManager.triggerDisable))]
+            public static bool triggerDisableMods()
+            {
+                return true;
+            }
+
+        }
+
+
+
     }
+
 }
